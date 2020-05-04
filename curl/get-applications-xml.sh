@@ -1,5 +1,6 @@
 #/bin/bash
 
+# Set initial user info & controller host
 USER_NAME="dustin"
 USER_PASS="appdynam1cs"
 ACCOUNT_NAME="customer1"
