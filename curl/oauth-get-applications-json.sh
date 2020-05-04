@@ -8,9 +8,11 @@ ACCOUNT_NAME="customer1"
 CONTROLLER_HOST="http://dmoormandevelopmentlab-kfk90btr.appd-sales.com:8090"
 
 # Obtain Access Token with Client Secret
-curl -X POST -H "Content-Type: application/vnd.appd.cntrl+protobuf;v=1" "${CONTROLLER_HOST}/controller/api/oauth/access_token" -d "grant_type=client_credentials&client_id=${OAUTH_CLIENT_NAME}@${ACCOUNT_NAME}&client_secret=${OAUTH_CLIENT_SECRET}" -o .access_token_payload
+curl -s -X POST -H "Content-Type: application/vnd.appd.cntrl+protobuf;v=1" "${CONTROLLER_HOST}/controller/api/oauth/access_token" -d "grant_type=client_credentials&client_id=${OAUTH_CLIENT_NAME}@${ACCOUNT_NAME}&client_secret=${OAUTH_CLIENT_SECRET}" -o .access_token_payload
 
 ACCESS_TOKEN=$(cat .access_token_payload | jq -r .access_token)
 
 # Get all applications in XML form
 curl -H "Authorization:Bearer ${ACCESS_TOKEN}" ${CONTROLLER_HOST}/controller/rest/applications
+
+rm .access_token_payload
