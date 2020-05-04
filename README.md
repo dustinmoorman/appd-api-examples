@@ -6,3 +6,4 @@ This repository is meant to house snippets of code that can interact with the Ap
 - [Using the Controller APIs](https://docs.appdynamics.com/display/PRO45/Using+the+Controller+APIs)
 - [Analytics Events API](https://docs.appdynamics.com/display/PRO45/Analytics+Events+API)
 - [API Clients](https://docs.appdynamics.com/display/PRO45/API+Clients)
+- [AppDynamics APIs](https://docs.appdynamics.com/display/PRO45/AppDynamics+APIs)
