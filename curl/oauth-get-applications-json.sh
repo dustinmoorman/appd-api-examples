@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # Set initial user info & controller host
@@ -15,4 +14,5 @@ ACCESS_TOKEN=$(cat .access_token_payload | jq -r .access_token)
 # Get all applications in XML form
 curl -H "Authorization:Bearer ${ACCESS_TOKEN}" ${CONTROLLER_HOST}/controller/rest/applications
 
+# cleanup written token payload
 rm .access_token_payload
