@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # Set initial user info & controller host
