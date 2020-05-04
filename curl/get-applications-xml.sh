@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 USER_NAME="dustin"
 USER_PASS="appdynam1cs"
