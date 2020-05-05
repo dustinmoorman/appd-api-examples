@@ -18,9 +18,10 @@ TOTAL_ROWS=$(cat .query_results | jq -r .[].total)
 COUNT_RETURNED=$(cat .query_results | jq '.[].results | length')
 
 # Get last element of array, and find the timestamp
-cat .query_results | jq '.[].results | .[-1]'
+LAST_TIMESTAMP=$(cat .query_results | jq -r '.[].results | .[-1] | .[12]')
 
 echo "Total Result Rows: ${TOTAL_ROWS}";
 echo "Returned in query: ${COUNT_RETURNED}";
+echo "Last Timestamp in collection: ${LAST_TIMESTAMP}";
 
 rm .query_results
