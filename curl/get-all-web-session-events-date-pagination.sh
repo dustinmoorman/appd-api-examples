@@ -11,18 +11,21 @@ curl -s -X POST -d "${ADQL_QUERY}" \
   -H"X-Events-API-AccountName:${GLOBAL_ACCOUNT_NAME}" \
   -H"X-Events-API-Key:${API_KEY}" \
   -H"Content-type: application/vnd.appd.events+json;v=2" \
-  "${CONTROLLER_HOST}/events/query?limit=${LIMIT}" \
+  "${CONTROLLER_HOST}/events/query" \
   -o .query_results
+
+echo "First pull";
+cat .query_results | jq '.[].results'
 
 TOTAL_ROWS=$(cat .query_results | jq -r .[].total)
 COUNT_RETURNED=$(cat .query_results | jq '.[].results | length')
 
-# Get last element of array, and find the timestamp
-LAST_TIMESTAMP=$(cat .query_results | jq -r '.[].results | .[-1] | .[12]')
+# Get oldest element of array, and find the timestamp
+OLDEST_TIMESTAMP=$(cat .query_results | jq -r '.[].results | .[0] | .[12]')
 
 echo "Total Result Rows: ${TOTAL_ROWS}";
 echo "Returned in query: ${COUNT_RETURNED}";
-echo "Last Timestamp in collection: ${LAST_TIMESTAMP}";
+echo "Last Timestamp in collection: ${OLDEST_TIMESTAMP}";
 
 if ((${COUNT_RETURNED} < ${TOTAL_ROWS}));
 then
@@ -30,10 +33,21 @@ then
     -H"X-Events-API-AccountName:${GLOBAL_ACCOUNT_NAME}" \
     -H"X-Events-API-Key:${API_KEY}" \
     -H"Content-type: application/vnd.appd.events+json;v=2" \
-    "${CONTROLLER_HOST}/events/query?limit=${LIMIT}&start=${LAST_TIMESTAMP}" \
+    "${CONTROLLER_HOST}/events/query?limit=${LIMIT}&start=${OLDEST_TIMESTAMP}" \
     -o .query_results_2
 fi
 
-cat .query_results_2 | jq
+echo "Second pull";
+cat .query_results_2 | jq '.[].results'
+
+TOTAL_ROWS=$(cat .query_results_2 | jq -r .[].total)
+COUNT_RETURNED=$(cat .query_results_2 | jq '.[].results | length')
+echo "Total Result Rows: ${TOTAL_ROWS}";
+echo "Returned in query: ${COUNT_RETURNED}";
+echo "Last Timestamp in collection: ${LAST_TIMESTAMP}";
+
+# TODO: Pop last timestamp off
+# TODO: Write results to file
+# TODO: add date limit
 
 rm .query_results
