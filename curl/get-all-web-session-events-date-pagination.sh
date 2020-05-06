@@ -11,7 +11,7 @@ curl -s -X POST -d "${ADQL_QUERY}" \
   -H"X-Events-API-AccountName:${GLOBAL_ACCOUNT_NAME}" \
   -H"X-Events-API-Key:${API_KEY}" \
   -H"Content-type: application/vnd.appd.events+json;v=2" \
-  "${CONTROLLER_HOST}/events/query" \
+  "${CONTROLLER_HOST}/events/query?limit=${LIMIT}" \
   -o .query_results
 
 echo "First pull";
@@ -21,11 +21,13 @@ TOTAL_ROWS=$(cat .query_results | jq -r .[].total)
 COUNT_RETURNED=$(cat .query_results | jq '.[].results | length')
 
 # Get oldest element of array, and find the timestamp
-OLDEST_TIMESTAMP=$(cat .query_results | jq -r '.[].results | .[0] | .[12]')
+OLDEST_TIMESTAMP=$(cat .query_results | jq -r '.[].results | .[-1] | .[12]')
 
 echo "Total Result Rows: ${TOTAL_ROWS}";
 echo "Returned in query: ${COUNT_RETURNED}";
 echo "Last Timestamp in collection: ${OLDEST_TIMESTAMP}";
+
+echo "Second pull";
 
 if ((${COUNT_RETURNED} < ${TOTAL_ROWS}));
 then
@@ -33,20 +35,20 @@ then
     -H"X-Events-API-AccountName:${GLOBAL_ACCOUNT_NAME}" \
     -H"X-Events-API-Key:${API_KEY}" \
     -H"Content-type: application/vnd.appd.events+json;v=2" \
-    "${CONTROLLER_HOST}/events/query?limit=${LIMIT}&start=${OLDEST_TIMESTAMP}" \
+    "${CONTROLLER_HOST}/events/query?limit=${LIMIT}&end=${OLDEST_TIMESTAMP}" \
     -o .query_results_2
 fi
 
-echo "Second pull";
-cat .query_results_2 | jq '.[].results'
+# Remove the newest record as it was used in end time so is also pulled
+cat .query_results_2 | jq '.[].results | del(.[0])'
 
 TOTAL_ROWS=$(cat .query_results_2 | jq -r .[].total)
 COUNT_RETURNED=$(cat .query_results_2 | jq '.[].results | length')
+
 echo "Total Result Rows: ${TOTAL_ROWS}";
 echo "Returned in query: ${COUNT_RETURNED}";
 echo "Last Timestamp in collection: ${LAST_TIMESTAMP}";
 
-# TODO: Pop last timestamp off
 # TODO: Write results to file
 # TODO: add date limit
 
