@@ -6,4 +6,8 @@ CONTROLLER_HOST="http://dmoormandevelopmentlab-kfk90btr.appd-sales.com:9080"
 
 ADQL_QUERY="SELECT * FROM transactions WHERE userExperience = ERROR"
 
-curl -X POST -d "${ADQL_QUERY}" -H"X-Events-API-AccountName:${GLOBAL_ACCOUNT_NAME}" -H"X-Events-API-Key:${API_KEY}" -H"Content-type: application/vnd.appd.events+json;v=2" "${CONTROLLER_HOST}/events/query?limit=5"
+curl -X POST -d "${ADQL_QUERY}" \
+  -H"X-Events-API-AccountName:${GLOBAL_ACCOUNT_NAME}" \
+  -H"X-Events-API-Key:${API_KEY}" \
+  -H"Content-type: application/vnd.appd.events+json;v=2" \
+  "${CONTROLLER_HOST}/events/query?limit=5"
