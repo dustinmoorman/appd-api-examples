@@ -4,9 +4,12 @@ API_KEY="d67cc104-6ac5-4a83-9cc1-cee1766e58a8" # dmoorman-test-api-key
 GLOBAL_ACCOUNT_NAME="customer1_0cf8fe6a-74e0-4dac-b739-8e36b2d8e2ec"
 CONTROLLER_HOST="http://dmoormandevelopmentlab-kfk90btr.appd-sales.com:9080"
 LIMIT=2
+OUTPUT_FILENAME="results.json"
 
+############# The ADQL query with the table you would like to pull data from
 ADQL_QUERY="SELECT * FROM web_session_records" 
 
+############## The actual API call, note the limit parameter, content type, and use of the HTTP Headers for Authentication
 curl -s -X POST -d "${ADQL_QUERY}" \
   -H"X-Events-API-AccountName:${GLOBAL_ACCOUNT_NAME}" \
   -H"X-Events-API-Key:${API_KEY}" \
@@ -15,7 +18,8 @@ curl -s -X POST -d "${ADQL_QUERY}" \
   -o .query_results
 
 echo "First pull";
-cat .query_results | jq '.[].results'
+cat .query_results > "${OUTPUT_FILENAME}"
+cat "${OUTPUT_FILENAME}" | jq 
 
 TOTAL_ROWS=$(cat .query_results | jq -r .[].total)
 COUNT_RETURNED=$(cat .query_results | jq '.[].results | length')
@@ -31,6 +35,7 @@ echo "Second pull";
 
 if ((${COUNT_RETURNED} < ${TOTAL_ROWS}));
 then
+  ############### Follow up API calls with date pagination ending on the oldest timestamp recieved from the previous run
   curl -s -X POST -d "${ADQL_QUERY}" \
     -H"X-Events-API-AccountName:${GLOBAL_ACCOUNT_NAME}" \
     -H"X-Events-API-Key:${API_KEY}" \
@@ -39,8 +44,9 @@ then
     -o .query_results_2
 fi
 
-# Remove the newest record as it was used in end time so is also pulled
-cat .query_results_2 | jq '.[].results | del(.[0])'
+# Remove the newest record in this set as it was used in end time so is also pulled
+RECORD_SET=$(cat .query_results_2 | jq '.[].results | del(.[0])')
+echo $RECORD_SET | jq .[]
 
 TOTAL_ROWS=$(cat .query_results_2 | jq -r .[].total)
 COUNT_RETURNED=$(cat .query_results_2 | jq '.[].results | length')
@@ -50,6 +56,9 @@ echo "Returned in query: ${COUNT_RETURNED}";
 echo "Last Timestamp in collection: ${LAST_TIMESTAMP}";
 
 # TODO: Write results to file
+cat "${OUTPUT_FILENAME}" | jq ".[].results |= .+ [${RECORD_SET}]"
+
 # TODO: add date limit
 
 rm .query_results
+rm .query_results_2
