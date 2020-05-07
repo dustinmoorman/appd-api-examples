@@ -55,10 +55,8 @@ echo "Total Result Rows: ${TOTAL_ROWS}";
 echo "Returned in query: ${COUNT_RETURNED}";
 echo "Last Timestamp in collection: ${LAST_TIMESTAMP}";
 
-# TODO: Write results to file
 cat "${OUTPUT_FILENAME}" | jq ".[].results |= .+ [${RECORD_SET}]"
 
-# TODO: add date limit
-
+# cleanup
 rm .query_results
 rm .query_results_2
