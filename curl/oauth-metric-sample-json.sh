@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Set initial user info & controller host
+# Set initial identity info & controller host
 OAUTH_CLIENT_SECRET="49c0ae5b-e6e1-4ae3-b69e-53a74b7e430e"
 OAUTH_CLIENT_NAME="dmoorman-test-client"
 ACCOUNT_NAME="customer1"
