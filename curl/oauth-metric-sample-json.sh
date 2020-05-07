@@ -20,9 +20,9 @@ curl -s -X POST -H "Content-Type: application/vnd.appd.cntrl+protobuf;v=1" \
 
 ACCESS_TOKEN=$(cat .access_token_payload | jq -r .access_token)
 
-# Get all applications in XML form
+# Get all applications in JSON form
 curl -H "Authorization:Bearer ${ACCESS_TOKEN}" \
-  "${CONTROLLER_HOST}/controller/rest/applications/${APPLICATION}/metric-data?metric-path=${METRIC_PATH}&time-range-type=${TIME_RANGE_TYPE}&duration-in-mins=${DURATION_MINS}"
+  "${CONTROLLER_HOST}/controller/rest/applications/${APPLICATION}/metric-data?metric-path=${METRIC_PATH}&time-range-type=${TIME_RANGE_TYPE}&duration-in-mins=${DURATION_MINS}&output=JSON"
 
 # cleanup 
 rm .access_token_payload
