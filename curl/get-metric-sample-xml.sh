@@ -12,4 +12,4 @@ DURATION_MINS=60
 
 # Get metrics call
 curl --user "${USER_NAME}@${ACCOUNT_NAME}:${USER_PASS}" \
-  "${CONTROLLER_HOST}/controller/rest/applications/AppDynamics%20Analytics-2/metric-data?metric-path=${METRIC_PATH}&time-range-type=${TIME_RANGE_TYPE}&duration-in-mins=${DURATION_MINS}&output=JSON"
+  "${CONTROLLER_HOST}/controller/rest/applications/AppDynamics%20Analytics-2/metric-data?metric-path=${METRIC_PATH}&time-range-type=${TIME_RANGE_TYPE}&duration-in-mins=${DURATION_MINS}"
